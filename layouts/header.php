@@ -17,6 +17,7 @@
                 <header class="header">
                     <div class="header__logo"><a class="logo" href="#"><img class="logo__icon" src="./img/icons/logo.svg"></a></div>
                     <div class="header__menu">
+
                         <nav class="nav">
                             <ul class="nav__list">
                                 <li class="nav__item"><a class="nav__link" href="1">о нас</a>
@@ -31,9 +32,15 @@
                                 </li>
                                 <li class="nav__item"><a class="nav__link" href="7">контакты</a>
                                 </li>
+                                <li class="nav__item" style="color:#ffff00"><?php if (isset($_SESSION)) {
+                                        echo 'Привет '.$_SESSION['username'];
+                                    }
+                                    ?>
+                                </li>
                             </ul>
                         </nav>
                     </div>
                     <div class="header__links"><a class="order-link btn" href="6">Заказать</a><a class="hamburger-menu-link" href="">
                             <div class="hamburger-menu-link__bars"></div></a></div>
+
                 </header>
