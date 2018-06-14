@@ -192,46 +192,43 @@ function updateOrderCount($email)
 
 //Основной блок выполнения кода
 
-$email = $_POST['email'];
-$phone = $_POST['phone'];
-$name = $_POST['name'];
-$street = $_POST['street'];
-$home = $_POST['home'];
-$part = $_POST['part'];
-$appt = $_POST['appt'];
-$floor = $_POST['floor'];
-$comment = $_POST['comment'];
+function main(array $data)
+{
+    $email = strtolower(trim($data['email']));
+    $phone = $data['phone'];
+    $name = $data['name'];
+    $street = $data['street'];
+    $home = $data['home'];
+    $part = $data['part'];
+    $appt = $data['appt'];
+    $floor = $data['floor'];
+    $comment = $data['comment'];
 
-if ($_POST['payment1']) {
-    $_POST['payment1'] = 'Yes';
-} else {
-    $_POST['payment1'] = 'No';
-}
+    $data['payment1'] = (!empty($data['payment1'])) ? 'Yes' : 'No';
+    $data['payment2'] = (!empty($data['payment2'])) ? 'Yes' : 'No';
+    $data['callback'] = (!empty($data['callback'])) ? 'Yes' : 'No';
 
-if ($_POST['payment2']) {
-    $_POST['payment2'] = 'Yes';
-} else {
-    $_POST['payment2'] = 'No';
-}
-if ($_POST['callback']) {
-    $_POST['callback'] = 'Yes';
-} else {
-    $_POST['callback'] = 'No';
-}
-$array1 = $_POST;
-$address = 'Улица: ' . $street . ' Дом: ' . $home . ' Корпус: ' . $part . ' Квартира: ' . $appt . ' Этаж: ' . $floor;
+    $address = sprintf(
+        "Улица: %s\nДом: %s\nКорпус: %s\nКвартира: %s\nЭтаж: %s",
+        $street,
+        $home,
+        $part,
+        $appt,
+        $floor
+    );
 
-if (checkEmailExists($email)) {
     $id = checkEmailExists($email);
-    $orderCount = getOrderCount($email);
-    $orderId = zakaz($array1, $id);
-    fileOrder($orderId, $address, $orderCount + 1);
-    updateOrderCount($email);
 
-} else {
-    $id = register($email, $phone, $name);
+    if ($id < 1) {
+        $id = register($email, $phone, $name);
+    }
+
     $orderCount = getOrderCount($email);
-    $orderId = zakaz($array1, $id);
-    fileOrder($orderId, $address, $orderCount + 1);
+    $orderId = zakaz($data, $id);
+    fileOrder($orderId, $address, ++$orderCount);
     updateOrderCount($email);
+}
+
+if (!empty($_POST['email'])) {
+    main($_POST);
 }
