@@ -225,8 +225,26 @@ function main(array $data)
 
     $orderCount = getOrderCount($email);
     $orderId = zakaz($data, $id);
+    swift($email,$orderId, $address, ++$orderCount);
     fileOrder($orderId, $address, ++$orderCount);
     updateOrderCount($email);
+}
+
+function swift($email, $orderId, $address, $orderCount)
+{
+    $transport = (new Swift_SmtpTransport('smtp.mail.ru', 587,'tls'))
+        ->setUsername('sayat023@mail.ru')
+        ->setPassword('Qwerty-123');
+
+    $mailer = new Swift_Mailer($transport);
+
+    $message = (new Swift_Message('Заказ #'.$orderId))
+        ->setFrom(['sayat023@mail.ru' => 'sayat023'])
+        ->setTo([$email])
+        ->setBody('Ваш заказ будет доставлен по адресу ' . $address.
+        ' DarkBeefBurger за 500 рублей, 1 шт'.
+        ' Спасибо - это ваш'.$orderCount. ' заказ');
+
 }
 
 if (!empty($_POST['email'])) {
