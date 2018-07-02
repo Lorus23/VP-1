@@ -1,5 +1,6 @@
 <?php
 require_once('config/db.php');
+require_once ('View.php');
 session_start();
 
 
@@ -228,6 +229,7 @@ function main(array $data)
     swift($email,$name,$orderId, $address, ++$orderCount);
     fileOrder($orderId, $address, ++$orderCount);
     updateOrderCount($email);
+    twig($data);
 }
 
 function swift($email, $name,$orderId, $address, $orderCount)
@@ -244,6 +246,13 @@ function swift($email, $name,$orderId, $address, $orderCount)
         ->setBody('Ваш заказ будет доставлен по адресу ' . $address.
         ' DarkBeefBurger за 500 рублей, 1 шт'.
         ' Спасибо - это ваш'.$orderCount. ' заказ');
+}
+
+function twig($data)
+{
+    $result = new View();
+    $result -> twigLoader('result',[$data]);
+
 }
 
 if (!empty($_POST['email'])) {
